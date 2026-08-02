@@ -21,16 +21,16 @@ Future<void> main() async {
   );
 }
 
-class ECommerceApp extends StatelessWidget {
+class ECommerceApp extends ConsumerWidget {
   const ECommerceApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: 'E-Commerce App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      routerConfig: appRouter,
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }
