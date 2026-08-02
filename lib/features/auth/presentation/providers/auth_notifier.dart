@@ -1,26 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/storage/local_storage_service.dart';
+import '../../../../core/storage/storage_provider.dart';
+
 import '../../data/models/login_request_model.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 import 'auth_provider.dart';
 import 'auth_state.dart';
 
-
 class AuthNotifier extends Notifier<AuthState> {
 
   late final AuthRepository repository;
 
+  late final LocalStorageService storage;
 
-  @override
-  AuthState build() {
+ @override
+AuthState build() {
 
-    repository = ref.read(authRepositoryProvider);
+  repository = ref.read(authRepositoryProvider);
 
-    return const AuthState();
+  storage = ref.read(localStorageProvider);
 
-  }
+  return const AuthState();
 
+}
 
   Future<void> login({
     required String email,
@@ -41,12 +45,17 @@ class AuthNotifier extends Notifier<AuthState> {
         );
 
 
-      await repository.login(request);
+      final response = await repository.login(request);
 
 
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-      );
+     await storage.saveToken(
+     response.token,
+    );
+
+
+state = state.copyWith(
+  status: AuthStatus.authenticated,
+);
 
 
     } catch (e) {
