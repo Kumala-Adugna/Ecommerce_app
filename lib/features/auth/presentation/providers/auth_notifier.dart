@@ -71,12 +71,14 @@ state = state.copyWith(
   }
 
 
-  void logout(){
+  Future<void> logout() async {
 
-    state = state.copyWith(
-      status: AuthStatus.unauthenticated,
-    );
+  await storage.clearSession();
 
-  }
+  state = state.copyWith(
+    status: AuthStatus.unauthenticated,
+  );
+
+}
 
 }
