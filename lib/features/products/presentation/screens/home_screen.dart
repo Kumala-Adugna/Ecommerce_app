@@ -1,66 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../auth/presentation/providers/auth_provider.dart';
+import '../providers/product_provider.dart';
+import '../providers/product_state.dart';
 
-
-class HomeScreen extends ConsumerWidget {
-
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
 
-    return Scaffold(
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
 
-      appBar: AppBar(
-
-        title: const Text(
-          'Home',
-        ),
-
-        actions: [
-
-          IconButton(
-
-            icon: const Icon(
-              Icons.logout,
-            ),
-
-            onPressed: () async {
-
-              await ref
-                  .read(authProvider.notifier)
-                  .logout();
-
-
-              if (context.mounted) {
-
-                context.go('/login');
-
-              }
-
-            },
-
-          ),
-
-        ],
-
-      ),
-
-
-      body: const Center(
-
-        child: Text(
-          'Home Screen',
-        ),
-
-      ),
-
-    );
-
+    Future.microtask(() {
+      ref.read(productProvider.notifier).loadProducts();
+    });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(productProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Products'),
+      ),
+      body: switch (state.status) {
+        ProductStatus.loading => const Center(
+            child: CircularProgressIndicator(),
+          ),
+
+        ProductStatus.error => Center(
+            child: Text(
+              state.errorMessage ?? 'Failed to load products',
+            ),
+          ),
+
+        ProductStatus.loaded => ListView.builder(
+            itemCount: state.products.length,
+            itemBuilder: (context, index) {
+              final product = state.products[index];
+
+              return ListTile(
+                title: Text(product.title),
+                subtitle: Text('\$${product.price}'),
+              );
+            },
+          ),
+
+        _ => const SizedBox.shrink(),
+      },
+    );
+  }
 }
