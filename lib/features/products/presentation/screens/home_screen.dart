@@ -17,6 +17,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -29,14 +31,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final state = ref.watch(productProvider);
+    final productState = ref.watch(productProvider);
 
     final categoryState = ref.watch(categoryProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products'),
+        title: TextField(
+          controller: searchController,
+          decoration: const InputDecoration(
+            hintText: 'Search products...',
+            border: InputBorder.none,
+          ),
+          onChanged: (value) {
+            ref.read(productProvider.notifier).searchProducts(value);
+          },
+        ),
 
         actions: [
           IconButton(
@@ -48,43 +65,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
 
-      body: switch (state.status) {
+      body: switch (productState.status) {
         ProductStatus.loading => const Center(
           child: CircularProgressIndicator(),
         ),
 
         ProductStatus.error => Center(
-          child: Text(state.errorMessage ?? 'Failed to load products'),
+          child: Text(productState.errorMessage ?? 'Failed to load products'),
         ),
 
         ProductStatus.loaded => Column(
           children: [
             SizedBox(
               height: 55,
+
               child: categoryState.status == CategoryStatus.loaded
-                  ? ListView.builder(
+                  ? ListView(
                       scrollDirection: Axis.horizontal,
 
                       padding: const EdgeInsets.symmetric(horizontal: 12),
 
-                      itemCount: categoryState.categories.length,
+                      children: [
+                        ActionChip(
+                          label: const Text('All'),
 
-                      itemBuilder: (context, index) {
-                        final category = categoryState.categories[index];
+                          onPressed: () {
+                            ref.read(productProvider.notifier).loadProducts();
+                          },
+                        ),
 
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
+                        const SizedBox(width: 8),
 
-                          child: ActionChip(
-                            label: Text(category),
-                            onPressed: () {
-                              ref
-                                  .read(productProvider.notifier)
-                                  .loadProductsByCategory(category);
-                            },
-                          ),
-                        );
-                      },
+                        ...categoryState.categories.map((category) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+
+                            child: ActionChip(
+                              label: Text(category),
+
+                              onPressed: () {
+                                ref
+                                    .read(productProvider.notifier)
+                                    .loadProductsByCategory(category);
+                              },
+                            ),
+                          );
+                        }),
+                      ],
                     )
                   : const SizedBox(),
             ),
@@ -103,10 +130,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   childAspectRatio: 0.68,
                 ),
 
-                itemCount: state.products.length,
+                itemCount: productState.products.length,
 
                 itemBuilder: (context, index) {
-                  final product = state.products[index];
+                  final product = productState.products[index];
 
                   return ProductCard(
                     product: product,
