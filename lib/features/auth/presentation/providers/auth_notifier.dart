@@ -37,12 +37,13 @@ class AuthNotifier extends Notifier<AuthState> {
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.error,
+
         errorMessage: e.toString(),
       );
     }
   }
 
-  Future logout() async {
+  Future<void> logout() async {
     await storage.removeToken();
 
     await storage.removeUserId();
