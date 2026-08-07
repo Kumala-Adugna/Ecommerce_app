@@ -6,9 +6,11 @@ class HomeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
-      height: 160,
+      padding: const EdgeInsets.all(16),
+
+      height: 150,
 
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -24,46 +26,62 @@ class HomeBanner extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
-            offset: const Offset(0, 6),
+
+            offset: const Offset(0, 5),
+
             color: Colors.black.withValues(alpha: 0.15),
           ),
         ],
       ),
 
-      child: Padding(
-        padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
 
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
-                mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  '🔥 Special Offer',
 
-                children: [
-                  const Text(
-                    '🔥 Special Offer',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  maxLines: 1,
+
+                  overflow: TextOverflow.ellipsis,
+
+                  style: TextStyle(
+                    color: Colors.white,
+
+                    fontSize: 17,
+
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
 
-                  const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
-                  const Text(
-                    'Discover amazing products\nwith best prices',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
+                const Text(
+                  'Discover amazing products\nwith best prices',
 
-                  const SizedBox(height: 12),
+                  maxLines: 2,
 
-                  ElevatedButton(
+                  overflow: TextOverflow.ellipsis,
+
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+
+                const SizedBox(height: 8),
+
+                SizedBox(
+                  height: 34,
+
+                  child: ElevatedButton(
                     onPressed: () {},
 
                     style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+
                       backgroundColor: Colors.white,
 
                       foregroundColor: Colors.black,
@@ -73,21 +91,27 @@ class HomeBanner extends StatelessWidget {
                       ),
                     ),
 
-                    child: const Text('Shop Now'),
+                    child: const Text(
+                      'Shop Now',
+
+                      style: TextStyle(fontSize: 13),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
 
-            const Icon(
-              Icons.shopping_bag_outlined,
+          const SizedBox(width: 10),
 
-              size: 70,
+          const Icon(
+            Icons.shopping_bag_outlined,
 
-              color: Colors.white,
-            ),
-          ],
-        ),
+            size: 55,
+
+            color: Colors.white,
+          ),
+        ],
       ),
     );
   }
