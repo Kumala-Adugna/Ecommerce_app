@@ -124,7 +124,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
 
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withValues(alpha: 0.1),
 
                       borderRadius: BorderRadius.circular(16),
                     ),
