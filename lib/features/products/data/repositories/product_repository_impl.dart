@@ -12,4 +12,14 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<List<Product>> getProducts() async {
     return remoteDataSource.getProducts();
   }
+
+  @override
+  Future<List<String>> getCategories() async {
+    return remoteDataSource.getCategories();
+  }
+
+  @override
+  Future<List<Product>> getProductsByCategory(String category) async {
+    return remoteDataSource.getProductsByCategory(category);
+  }
 }
