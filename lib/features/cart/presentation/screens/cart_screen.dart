@@ -11,71 +11,149 @@ class CartScreen extends ConsumerWidget {
     final cart = ref.watch(cartProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cart')),
+      appBar: AppBar(title: const Text('My Cart')),
+
       body: cart.items.isEmpty
-          ? const Center(child: Text('Your cart is empty'))
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
+
+                  SizedBox(height: 16),
+
+                  Text('Your cart is empty', style: TextStyle(fontSize: 18)),
+                ],
+              ),
+            )
           : Column(
               children: [
                 Expanded(
                   child: ListView.builder(
+                    padding: const EdgeInsets.all(12),
+
                     itemCount: cart.items.length,
+
                     itemBuilder: (context, index) {
                       final item = cart.items[index];
 
                       return Card(
-                        margin: const EdgeInsets.all(8),
-                        child: ListTile(
-                          leading: Image.network(
-                            item.product.image,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.contain,
-                          ),
+                        elevation: 3,
 
-                          title: Text(
-                            item.product.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        margin: const EdgeInsets.only(bottom: 12),
 
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+
+                          child: Row(
                             children: [
-                              Text('\$${item.product.price}'),
+                              SizedBox(
+                                width: 80,
+                                height: 80,
 
-                              Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(cartProvider.notifier)
-                                          .decreaseQuantity(item.product.id);
-                                    },
-                                    icon: const Icon(Icons.remove),
-                                  ),
+                                child: Image.network(
+                                  item.product.image,
 
-                                  Text('${item.quantity}'),
+                                  fit: BoxFit.contain,
 
-                                  IconButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(cartProvider.notifier)
-                                          .increaseQuantity(item.product.id);
-                                    },
-                                    icon: const Icon(Icons.add),
-                                  ),
-                                ],
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.image);
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(width: 12),
+
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                                  children: [
+                                    Text(
+                                      item.product.title,
+
+                                      maxLines: 2,
+
+                                      overflow: TextOverflow.ellipsis,
+
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 8),
+
+                                    Text(
+                                      '\$${item.product.price}',
+
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            ref
+                                                .read(cartProvider.notifier)
+                                                .decreaseQuantity(
+                                                  item.product.id,
+                                                );
+                                          },
+
+                                          icon: const Icon(
+                                            Icons.remove_circle_outline,
+                                          ),
+                                        ),
+
+                                        Text(
+                                          '${item.quantity}',
+
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+
+                                        IconButton(
+                                          onPressed: () {
+                                            ref
+                                                .read(cartProvider.notifier)
+                                                .increaseQuantity(
+                                                  item.product.id,
+                                                );
+                                          },
+
+                                          icon: const Icon(
+                                            Icons.add_circle_outline,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                ),
+
+                                onPressed: () {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .removeFromCart(item.product.id);
+                                },
                               ),
                             ],
-                          ),
-
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              ref
-                                  .read(cartProvider.notifier)
-                                  .removeFromCart(item.product.id);
-                            },
                           ),
                         ),
                       );
@@ -83,14 +161,50 @@ class CartScreen extends ConsumerWidget {
                   ),
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Total: \$${cart.totalAmount.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          const Text(
+                            'Total',
+
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          Text(
+                            '\$${cart.totalAmount.toStringAsFixed(2)}',
+
+                            style: const TextStyle(
+                              fontSize: 22,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+
+                        height: 55,
+
+                        child: ElevatedButton(
+                          onPressed: () {},
+
+                          child: const Text('Checkout'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
