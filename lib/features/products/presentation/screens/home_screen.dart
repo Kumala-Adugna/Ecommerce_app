@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../providers/category_provider.dart';
+import '../providers/category_state.dart';
 import '../providers/product_provider.dart';
 import '../providers/product_state.dart';
 import '../widgets/product_card.dart';
@@ -11,22 +13,26 @@ class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  ConsumerState createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
       ref.read(productProvider.notifier).loadProducts();
+
+      ref.read(categoryProvider.notifier).loadCategories();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(productProvider);
+
+    final categoryState = ref.watch(categoryProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,35 +57,74 @@ class _HomeScreenState extends ConsumerState {
           child: Text(state.errorMessage ?? 'Failed to load products'),
         ),
 
-        ProductStatus.loaded => GridView.builder(
-          padding: const EdgeInsets.all(12),
+        ProductStatus.loaded => Column(
+          children: [
+            SizedBox(
+              height: 55,
+              child: categoryState.status == CategoryStatus.loaded
+                  ? ListView.builder(
+                      scrollDirection: Axis.horizontal,
 
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.68,
-          ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
 
-          itemCount: state.products.length,
+                      itemCount: categoryState.categories.length,
 
-          itemBuilder: (context, index) {
-            final product = state.products[index];
+                      itemBuilder: (context, index) {
+                        final category = categoryState.categories[index];
 
-            return ProductCard(
-              product: product,
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
 
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProductDetailsScreen(product: product),
-                  ),
-                );
-              },
-            );
-          },
+                          child: ActionChip(
+                            label: Text(category),
+
+                            onPressed: () {
+                              // filtering will be added next
+                            },
+                          ),
+                        );
+                      },
+                    )
+                  : const SizedBox(),
+            ),
+
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(12),
+
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+
+                  crossAxisSpacing: 12,
+
+                  mainAxisSpacing: 12,
+
+                  childAspectRatio: 0.68,
+                ),
+
+                itemCount: state.products.length,
+
+                itemBuilder: (context, index) {
+                  final product = state.products[index];
+
+                  return ProductCard(
+                    product: product,
+
+                    onTap: () {
+                      Navigator.push(
+                        context,
+
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetailsScreen(product: product),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
 
         _ => const SizedBox.shrink(),
