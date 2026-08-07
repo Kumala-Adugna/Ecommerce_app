@@ -6,6 +6,7 @@ import '../providers/category_provider.dart';
 import '../providers/category_state.dart';
 import '../providers/product_provider.dart';
 import '../providers/product_state.dart';
+import '../widgets/home_banner.dart';
 import '../widgets/product_card.dart';
 import 'product_details_screen.dart';
 
@@ -144,6 +145,7 @@ class _HomeScreenState extends ConsumerState {
 
         ProductStatus.loaded => Column(
           children: [
+            const HomeBanner(),
             SizedBox(
               height: 55,
 
