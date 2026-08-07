@@ -10,7 +10,7 @@ final sharedPreferencesProvider =
 
 final localStorageProvider =
     Provider<LocalStorageService>((ref) {
-  return LocalStorageService(
-    ref.watch(sharedPreferencesProvider),
-  );
+  final preferences = ref.watch(sharedPreferencesProvider);
+
+  return LocalStorageService(preferences);
 });

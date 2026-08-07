@@ -44,14 +44,15 @@ AuthState build() {
          password: password,
         );
 
+final response = await repository.login(request);
 
-      final response = await repository.login(request);
+print('LOGIN RESPONSE TOKEN: ${response.token}');
 
+await storage.saveToken(
+  response.token,
+);
 
-     await storage.saveToken(
-     response.token,
-    );
-
+print('STORED TOKEN: ${storage.getToken()}');
 
 state = state.copyWith(
   status: AuthStatus.authenticated,

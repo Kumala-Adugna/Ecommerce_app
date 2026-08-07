@@ -10,21 +10,16 @@ import '../../domain/repositories/product_repository.dart';
 import 'product_notifier.dart';
 import 'product_state.dart';
 
-final productRemoteDataSourceProvider =
-    Provider<ProductRemoteDataSource>((ref) {
-  return ProductRemoteDataSource(
-    ref.read(apiClientProvider),
-  );
+final productRemoteDataSourceProvider = Provider<ProductRemoteDataSource>((
+  ref,
+) {
+  return ProductRemoteDataSource(ref.read(apiClientProvider));
 });
 
-final productRepositoryProvider =
-    Provider<ProductRepository>((ref) {
-  return ProductRepositoryImpl(
-    ref.read(productRemoteDataSourceProvider),
-  );
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  return ProductRepositoryImpl(ref.read(productRemoteDataSourceProvider));
 });
 
-final productProvider =
-    NotifierProvider<ProductNotifier, ProductState>(
+final productProvider = NotifierProvider<ProductNotifier, ProductState>(
   ProductNotifier.new,
 );
