@@ -77,9 +77,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                           child: ActionChip(
                             label: Text(category),
-
                             onPressed: () {
-                              // filtering will be added next
+                              ref
+                                  .read(productProvider.notifier)
+                                  .loadProductsByCategory(category);
                             },
                           ),
                         );

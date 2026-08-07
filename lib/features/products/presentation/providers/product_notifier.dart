@@ -5,7 +5,7 @@ import '../../domain/repositories/product_repository.dart';
 import 'product_provider.dart';
 import 'product_state.dart';
 
-class ProductNotifier extends Notifier<ProductState> {
+class ProductNotifier extends Notifier <ProductState>  {
   late final ProductRepository repository;
 
   @override
@@ -15,18 +15,28 @@ class ProductNotifier extends Notifier<ProductState> {
     return const ProductState();
   }
 
-  Future<void> loadProducts() async {
+  Future loadProducts() async {
     try {
-      state = state.copyWith(
-        status: ProductStatus.loading,
-      );
+      state = state.copyWith(status: ProductStatus.loading);
 
       final products = await repository.getProducts();
 
+      state = state.copyWith(status: ProductStatus.loaded, products: products);
+    } catch (e) {
       state = state.copyWith(
-        status: ProductStatus.loaded,
-        products: products,
+        status: ProductStatus.error,
+        errorMessage: e.toString(),
       );
+    }
+  }
+
+  Future loadProductsByCategory(String category) async {
+    try {
+      state = state.copyWith(status: ProductStatus.loading);
+
+      final products = await repository.getProductsByCategory(category);
+
+      state = state.copyWith(status: ProductStatus.loaded, products: products);
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
