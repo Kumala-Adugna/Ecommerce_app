@@ -13,10 +13,10 @@ class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState {
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -44,64 +44,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          height: 42,
+        automaticallyImplyLeading: false,
 
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        toolbarHeight: 115,
 
-            borderRadius: BorderRadius.circular(24),
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-          child: TextField(
-            controller: searchController,
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
-            decoration: InputDecoration(
-              hintText: 'Search products...',
+                  children: [
+                    Text(
+                      'Hello 👋',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
 
-              prefixIcon: const Icon(Icons.search, size: 22),
+                    Text(
+                      'Find your products',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
 
-              suffixIcon: searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart_outlined, size: 28),
 
-                      onPressed: () {
-                        searchController.clear();
-
-                        ref.read(productProvider.notifier).clearSearch();
-
-                        setState(() {});
-                      },
-                    )
-                  : null,
-
-              border: InputBorder.none,
-
-              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                  onPressed: () {
+                    context.push('/cart');
+                  },
+                ),
+              ],
             ),
 
-            onChanged: (value) {
-              ref.read(productProvider.notifier).searchProducts(value);
+            const SizedBox(height: 12),
 
-              setState(() {});
-            },
-          ),
+            Container(
+              height: 42,
+
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+
+                borderRadius: BorderRadius.circular(24),
+              ),
+
+              child: TextField(
+                controller: searchController,
+
+                decoration: InputDecoration(
+                  hintText: 'Search products...',
+
+                  prefixIcon: const Icon(Icons.search, size: 22),
+
+                  suffixIcon: searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+
+                          onPressed: () {
+                            searchController.clear();
+
+                            ref.read(productProvider.notifier).clearSearch();
+
+                            setState(() {});
+                          },
+                        )
+                      : null,
+
+                  border: InputBorder.none,
+
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                ),
+
+                onChanged: (value) {
+                  ref.read(productProvider.notifier).searchProducts(value);
+
+                  setState(() {});
+                },
+              ),
+            ),
+          ],
         ),
-
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-
-            child: IconButton(
-              icon: const Icon(Icons.shopping_cart_outlined),
-
-              onPressed: () {
-                context.push('/cart');
-              },
-            ),
-          ),
-        ],
       ),
+
       body: switch (productState.status) {
         ProductStatus.loading => const Center(
           child: CircularProgressIndicator(),
@@ -125,6 +156,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       children: [
                         ChoiceChip(
                           label: const Text('All'),
+
                           selected: categoryState.selectedCategory == 'All',
 
                           onSelected: (_) {
