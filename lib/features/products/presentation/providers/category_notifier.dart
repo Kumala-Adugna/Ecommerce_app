@@ -32,4 +32,8 @@ class CategoryNotifier extends Notifier<CategoryState> {
       );
     }
   }
+
+  void selectCategory(String category) {
+    state = state.copyWith(selectedCategory: category);
+  }
 }

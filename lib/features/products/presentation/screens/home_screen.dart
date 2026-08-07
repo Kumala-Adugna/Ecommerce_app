@@ -46,12 +46,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: TextField(
           controller: searchController,
-          decoration: const InputDecoration(
+
+          decoration: InputDecoration(
             hintText: 'Search products...',
+
             border: InputBorder.none,
+
+            suffixIcon: searchController.text.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+
+                    onPressed: () {
+                      searchController.clear();
+
+                      ref.read(productProvider.notifier).clearSearch();
+
+                      setState(() {});
+                    },
+                  )
+                : null,
           ),
+
           onChanged: (value) {
             ref.read(productProvider.notifier).searchProducts(value);
+
+            setState(() {});
           },
         ),
 
@@ -86,10 +105,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
 
                       children: [
-                        ActionChip(
+                        ChoiceChip(
                           label: const Text('All'),
+                          selected: categoryState.selectedCategory == 'All',
 
-                          onPressed: () {
+                          onSelected: (_) {
+                            ref
+                                .read(categoryProvider.notifier)
+                                .selectCategory('All');
+
                             ref.read(productProvider.notifier).loadProducts();
                           },
                         ),
@@ -100,10 +124,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(right: 8),
 
-                            child: ActionChip(
+                            child: ChoiceChip(
                               label: Text(category),
 
-                              onPressed: () {
+                              selected:
+                                  categoryState.selectedCategory == category,
+
+                              onSelected: (_) {
+                                ref
+                                    .read(categoryProvider.notifier)
+                                    .selectCategory(category);
+
                                 ref
                                     .read(productProvider.notifier)
                                     .loadProductsByCategory(category);
