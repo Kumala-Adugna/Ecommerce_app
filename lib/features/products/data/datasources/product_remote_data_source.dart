@@ -10,7 +10,7 @@ class ProductRemoteDataSource {
   Future<List<ProductModel>> getProducts() async {
     final response = await apiClient.get('/products');
 
-    final List<dynamic> products = response.data['products'];
+    final List<dynamic> products = response.data;
 
     return products
         .map(
