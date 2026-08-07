@@ -11,7 +11,18 @@ class CartScreen extends ConsumerWidget {
     final cart = ref.watch(cartProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Cart')),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text(
+          'My Cart',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+      ),
 
       body: cart.items.isEmpty
           ? const Center(
@@ -26,7 +37,10 @@ class CartScreen extends ConsumerWidget {
 
                   SizedBox(height: 16),
 
-                  Text('Your cart is empty', style: TextStyle(fontSize: 18)),
+                  Text(
+                    'Your cart is empty',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
                 ],
               ),
             )
@@ -42,22 +56,30 @@ class CartScreen extends ConsumerWidget {
                       final item = cart.items[index];
 
                       return Card(
-                        elevation: 3,
+                        elevation: 4,
 
-                        margin: const EdgeInsets.only(bottom: 12),
+                        shadowColor: Colors.black12,
+
+                        margin: const EdgeInsets.only(bottom: 14),
 
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(20),
                         ),
 
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(14),
 
                           child: Row(
                             children: [
-                              SizedBox(
-                                width: 80,
-                                height: 80,
+                              Container(
+                                width: 85,
+                                height: 85,
+
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
 
                                 child: Image.network(
                                   item.product.image,
@@ -65,12 +87,12 @@ class CartScreen extends ConsumerWidget {
                                   fit: BoxFit.contain,
 
                                   errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(Icons.image);
+                                    return const Icon(Icons.image, size: 40);
                                   },
                                 ),
                               ),
 
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 14),
 
                               Expanded(
                                 child: Column(
@@ -86,6 +108,8 @@ class CartScreen extends ConsumerWidget {
 
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
+
+                                        fontSize: 15,
                                       ),
                                     ),
 
@@ -96,46 +120,79 @@ class CartScreen extends ConsumerWidget {
 
                                       style: const TextStyle(
                                         color: Colors.green,
+
                                         fontWeight: FontWeight.bold,
+
+                                        fontSize: 17,
                                       ),
                                     ),
 
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            ref
-                                                .read(cartProvider.notifier)
-                                                .decreaseQuantity(
-                                                  item.product.id,
-                                                );
-                                          },
+                                    const SizedBox(height: 8),
 
-                                          icon: const Icon(
-                                            Icons.remove_circle_outline,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                      ),
+
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+
+                                        children: [
+                                          IconButton(
+                                            visualDensity:
+                                                VisualDensity.compact,
+
+                                            onPressed: () {
+                                              ref
+                                                  .read(cartProvider.notifier)
+                                                  .decreaseQuantity(
+                                                    item.product.id,
+                                                  );
+                                            },
+
+                                            icon: const Icon(
+                                              Icons.remove,
+
+                                              size: 18,
+                                            ),
                                           ),
-                                        ),
 
-                                        Text(
-                                          '${item.quantity}',
+                                          Text(
+                                            '${item.quantity}',
 
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
 
-                                        IconButton(
-                                          onPressed: () {
-                                            ref
-                                                .read(cartProvider.notifier)
-                                                .increaseQuantity(
-                                                  item.product.id,
-                                                );
-                                          },
-
-                                          icon: const Icon(
-                                            Icons.add_circle_outline,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+
+                                          IconButton(
+                                            visualDensity:
+                                                VisualDensity.compact,
+
+                                            onPressed: () {
+                                              ref
+                                                  .read(cartProvider.notifier)
+                                                  .increaseQuantity(
+                                                    item.product.id,
+                                                  );
+                                            },
+
+                                            icon: const Icon(
+                                              Icons.add,
+
+                                              size: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -144,6 +201,7 @@ class CartScreen extends ConsumerWidget {
                               IconButton(
                                 icon: const Icon(
                                   Icons.delete_outline,
+
                                   color: Colors.red,
                                 ),
 
@@ -164,6 +222,20 @@ class CartScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
 
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+
+                        blurRadius: 10,
+
+                        offset: const Offset(0, -3),
+                      ),
+                    ],
+                  ),
+
                   child: Column(
                     children: [
                       Row(
@@ -175,6 +247,7 @@ class CartScreen extends ConsumerWidget {
 
                             style: TextStyle(
                               fontSize: 20,
+
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -184,7 +257,9 @@ class CartScreen extends ConsumerWidget {
 
                             style: const TextStyle(
                               fontSize: 22,
+
                               color: Colors.green,
+
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -199,9 +274,29 @@ class CartScreen extends ConsumerWidget {
                         height: 55,
 
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.teal,
+
+                            foregroundColor: Colors.white,
+
+                            elevation: 0,
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+
                           onPressed: () {},
 
-                          child: const Text('Checkout'),
+                          child: const Text(
+                            'Checkout',
+
+                            style: TextStyle(
+                              fontSize: 18,
+
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
