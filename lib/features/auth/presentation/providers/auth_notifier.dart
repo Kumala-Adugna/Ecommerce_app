@@ -42,8 +42,10 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  Future<void> logout() async {
-    await storage.clearSession();
+  Future logout() async {
+    await storage.removeToken();
+
+    await storage.removeUserId();
 
     state = state.copyWith(status: AuthStatus.unauthenticated);
   }

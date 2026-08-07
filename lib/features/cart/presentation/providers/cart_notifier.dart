@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/storage/local_storage_service.dart';
@@ -17,29 +15,15 @@ class CartNotifier extends Notifier<CartState> {
   CartState build() {
     storage = ref.read(localStorageProvider);
 
-    _loadCart();
-
-    return const CartState();
-  }
-
-  Future<void> _loadCart() async {
     final savedCart = storage.getCart();
 
-    if (savedCart.isEmpty) {
-      return;
-    }
-
-    final items = savedCart
-        .map((item) => CartItem.fromJson(jsonDecode(jsonEncode(item))))
-        .toList();
-
-    state = state.copyWith(items: items);
+    return CartState(
+      items: savedCart.map((item) => CartItem.fromJson(item)).toList(),
+    );
   }
 
-  Future<void> _saveCart() async {
-    final cartJson = state.items.map((item) => item.toJson()).toList();
-
-    await storage.saveCart(cartJson);
+  Future<void> saveCart() async {
+    await storage.saveCart(state.items.map((item) => item.toJson()).toList());
   }
 
   void addToCart(Product product) {
@@ -59,12 +43,13 @@ class CartNotifier extends Notifier<CartState> {
       state = state.copyWith(
         items: [
           ...state.items,
+
           CartItem(product: product, quantity: 1),
         ],
       );
     }
 
-    _saveCart();
+    saveCart();
   }
 
   void removeFromCart(int productId) {
@@ -72,7 +57,7 @@ class CartNotifier extends Notifier<CartState> {
       items: state.items.where((item) => item.product.id != productId).toList(),
     );
 
-    _saveCart();
+    saveCart();
   }
 
   void increaseQuantity(int productId) {
@@ -86,7 +71,7 @@ class CartNotifier extends Notifier<CartState> {
 
     state = state.copyWith(items: updatedItems);
 
-    _saveCart();
+    saveCart();
   }
 
   void decreaseQuantity(int productId) {
@@ -100,7 +85,7 @@ class CartNotifier extends Notifier<CartState> {
 
     state = state.copyWith(items: updatedItems);
 
-    _saveCart();
+    saveCart();
   }
 
   void clearCart() {
