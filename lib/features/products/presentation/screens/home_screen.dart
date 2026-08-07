@@ -44,46 +44,64 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: searchController,
+        title: Container(
+          height: 42,
 
-          decoration: InputDecoration(
-            hintText: 'Search products...',
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
 
-            border: InputBorder.none,
-
-            suffixIcon: searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-
-                    onPressed: () {
-                      searchController.clear();
-
-                      ref.read(productProvider.notifier).clearSearch();
-
-                      setState(() {});
-                    },
-                  )
-                : null,
+            borderRadius: BorderRadius.circular(24),
           ),
 
-          onChanged: (value) {
-            ref.read(productProvider.notifier).searchProducts(value);
+          child: TextField(
+            controller: searchController,
 
-            setState(() {});
-          },
+            decoration: InputDecoration(
+              hintText: 'Search products...',
+
+              prefixIcon: const Icon(Icons.search, size: 22),
+
+              suffixIcon: searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+
+                      onPressed: () {
+                        searchController.clear();
+
+                        ref.read(productProvider.notifier).clearSearch();
+
+                        setState(() {});
+                      },
+                    )
+                  : null,
+
+              border: InputBorder.none,
+
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            ),
+
+            onChanged: (value) {
+              ref.read(productProvider.notifier).searchProducts(value);
+
+              setState(() {});
+            },
+          ),
         ),
 
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              context.push('/cart');
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+
+            child: IconButton(
+              icon: const Icon(Icons.shopping_cart_outlined),
+
+              onPressed: () {
+                context.push('/cart');
+              },
+            ),
           ),
         ],
       ),
-
       body: switch (productState.status) {
         ProductStatus.loading => const Center(
           child: CircularProgressIndicator(),
