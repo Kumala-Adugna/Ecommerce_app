@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/storage/local_storage_service.dart';
+import '../../../../core/storage/storage_provider.dart';
 
 import '../../domain/entities/cart_item.dart';
 import '../../../products/domain/entities/product.dart';
@@ -6,9 +11,35 @@ import '../../../products/domain/entities/product.dart';
 import 'cart_state.dart';
 
 class CartNotifier extends Notifier<CartState> {
+  late final LocalStorageService storage;
+
   @override
   CartState build() {
+    storage = ref.read(localStorageProvider);
+
+    _loadCart();
+
     return const CartState();
+  }
+
+  Future<void> _loadCart() async {
+    final savedCart = storage.getCart();
+
+    if (savedCart.isEmpty) {
+      return;
+    }
+
+    final items = savedCart
+        .map((item) => CartItem.fromJson(jsonDecode(jsonEncode(item))))
+        .toList();
+
+    state = state.copyWith(items: items);
+  }
+
+  Future<void> _saveCart() async {
+    final cartJson = state.items.map((item) => item.toJson()).toList();
+
+    await storage.saveCart(cartJson);
   }
 
   void addToCart(Product product) {
@@ -32,12 +63,16 @@ class CartNotifier extends Notifier<CartState> {
         ],
       );
     }
+
+    _saveCart();
   }
 
   void removeFromCart(int productId) {
     state = state.copyWith(
       items: state.items.where((item) => item.product.id != productId).toList(),
     );
+
+    _saveCart();
   }
 
   void increaseQuantity(int productId) {
@@ -50,6 +85,8 @@ class CartNotifier extends Notifier<CartState> {
     }).toList();
 
     state = state.copyWith(items: updatedItems);
+
+    _saveCart();
   }
 
   void decreaseQuantity(int productId) {
@@ -62,9 +99,13 @@ class CartNotifier extends Notifier<CartState> {
     }).toList();
 
     state = state.copyWith(items: updatedItems);
+
+    _saveCart();
   }
 
   void clearCart() {
     state = const CartState();
+
+    storage.clearCart();
   }
 }

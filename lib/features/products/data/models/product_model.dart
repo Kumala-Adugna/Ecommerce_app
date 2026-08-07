@@ -22,15 +22,14 @@ class ProductModel extends Product {
       price: (json['price'] as num).toDouble(),
       category: json['category'] as String,
       image: json['image'] as String,
-      rating: ratingJson != null
-          ? (ratingJson['rate'] as num).toDouble()
-          : 0.0,
+      rating: ratingJson != null ? (ratingJson['rate'] as num).toDouble() : 0.0,
       ratingCount: ratingJson != null
           ? (ratingJson['count'] as num).toInt()
           : 0,
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -39,10 +38,7 @@ class ProductModel extends Product {
       'price': price,
       'category': category,
       'image': image,
-      'rating': {
-        'rate': rating,
-        'count': ratingCount,
-      },
+      'rating': {'rate': rating, 'count': ratingCount},
     };
   }
 }
