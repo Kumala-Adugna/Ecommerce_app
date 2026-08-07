@@ -10,76 +10,41 @@ import 'auth_provider.dart';
 import 'auth_state.dart';
 
 class AuthNotifier extends Notifier<AuthState> {
-
   late final AuthRepository repository;
 
   late final LocalStorageService storage;
 
- @override
-AuthState build() {
+  @override
+  AuthState build() {
+    repository = ref.read(authRepositoryProvider);
 
-  repository = ref.read(authRepositoryProvider);
+    storage = ref.read(localStorageProvider);
 
-  storage = ref.read(localStorageProvider);
+    return const AuthState();
+  }
 
-  return const AuthState();
-
-}
-
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
-
-
+  Future<void> login({required String email, required String password}) async {
     try {
+      state = state.copyWith(status: AuthStatus.loading);
 
-      state = state.copyWith(
-        status: AuthStatus.loading,
-      );
+      final request = LoginRequestModel(username: email, password: password);
 
+      final response = await repository.login(request);
 
-      final request = LoginRequestModel(
-         username: email,
-         password: password,
-        );
+      await storage.saveToken(response.token);
 
-final response = await repository.login(request);
-
-print('LOGIN RESPONSE TOKEN: ${response.token}');
-
-await storage.saveToken(
-  response.token,
-);
-
-print('STORED TOKEN: ${storage.getToken()}');
-
-state = state.copyWith(
-  status: AuthStatus.authenticated,
-);
-
-
+      state = state.copyWith(status: AuthStatus.authenticated);
     } catch (e) {
-
-
       state = state.copyWith(
         status: AuthStatus.error,
         errorMessage: e.toString(),
       );
-
     }
-
   }
 
-
   Future<void> logout() async {
+    await storage.clearSession();
 
-  await storage.clearSession();
-
-  state = state.copyWith(
-    status: AuthStatus.unauthenticated,
-  );
-
-}
-
+    state = state.copyWith(status: AuthStatus.unauthenticated);
+  }
 }
