@@ -1,3 +1,4 @@
+
 # 🛒 Ecommerce App Flutter
 
 A modern Flutter E-Commerce mobile application built using **Fake Store API**, **Riverpod state management**, and **Clean Architecture principles**.
@@ -6,114 +7,120 @@ The application provides a complete shopping experience including authentication
 
 ---
 
-## 📱 Screenshots
+# 📱 Screenshots
 
-(Add screenshots here)
+Here is a preview of the application:
 
-Example:
-
-```
-Coming soon...
-```
+| Homepage | Cart Page | Logout |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/Homepage.png" width="250"/> | <img src="assets/screenshots/CartPage.png" width="250"/> | <img src="assets/screenshots/Logout.png" width="250"/> |
 
 ---
 
 # ✨ Features
 
 ## 🔐 Authentication
+
 - User login using Fake Store API
 - Secure session persistence
 - Automatic login detection
 - Logout functionality
+- Token storage using Shared Preferences
+
+---
 
 ## 🛍️ Products
-- Fetch products from API
+
+- Fetch products from Fake Store API
 - Display products in modern grid layout
 - Product details page
 - Product rating display
 - Category filtering
-- Product search
+- Product search functionality
+- Cached network images
+
+---
 
 ## 🛒 Shopping Cart
+
 - Add products to cart
-- Increase/decrease quantity
+- Increase product quantity
+- Decrease product quantity
 - Remove products
 - Persistent cart storage
 - Automatic total calculation
 
-## 👤 Profile
-- User profile section
-- Logout support
+---
 
-## 🎨 UI/UX
+## 👤 Profile
+
+- User profile section
+- Display user information
+- Logout support
+- Session clearing
+
+---
+
+# 🎨 UI / UX
+
 - Modern ecommerce design
 - Responsive layouts
-- Rounded cards
-- Gradient banners
 - Material 3 components
-- Loading and error states
+- Rounded product cards
+- Gradient promotional banners
+- Custom themes
+- Loading states
+- Error handling
+- Clean user experience
 
 ---
 
 # 🏗️ Architecture
 
-The project follows **Clean Architecture**:
+The project follows **Clean Architecture principles**:
 
-```
+
+
 lib/
 
-├── core/
-│   ├── network/
-│   ├── storage/
-│   └── theme/
+├── core/││ ├── network/│ │ ├── api_client.dart│ │ ├── dio_provider.dart│ │ └── interceptors/│ ││ ├── storage/│ │ └── local_storage_service.dart│ ││ └── theme/││├── features/││ ├── auth/│ ││ │ ├── data/│ │ │ ├── models/│ │ │ ├── repositories/│ │ │ └── data_sources/│ │ ││ │ ├── domain/│ │ │ └── repositories/│ │ ││ │ └── presentation/│ │ ├── providers/│ │ └── screens/│││ ├── products/│ ││ │ ├── data/│ │ ├── domain/│ │ └── presentation/│││ ├── cart/│ ││ │ ├── data/│ │ └── presentation/│││ ├── profile/│ ││ └── navigation/││└── routes/
 
-├── features/
-
-│   ├── auth/
-│   │   ├── data/
-│   │   ├── domain/
-│   │   └── presentation/
-
-│   ├── products/
-│   │   ├── data/
-│   │   ├── domain/
-│   │   └── presentation/
-
-│   ├── cart/
-│   │   ├── data/
-│   │   └── presentation/
-
-│   ├── profile/
-│   │
-│   └── navigation/
-
-└── routes/
-```
 
 ---
 
 # 🛠️ Technologies Used
 
 ## Frontend
+
 - Flutter
 - Dart
 - Material Design 3
 
 ## State Management
+
 - Riverpod
 
 ## Networking
+
 - Dio
 - REST API
 
 ## Storage
+
 - Shared Preferences
 
 ## Navigation
+
 - Go Router
 
 ## Image Handling
+
 - Cached Network Image
+
+## Code Generation
+
+- json_serializable
+- build_runner
 
 ---
 
@@ -123,123 +130,138 @@ This application uses:
 
 Fake Store API
 
-```
+
+
 https://fakestoreapi.com
-```
 
-Used endpoints:
 
-```
-POST   /auth/login
+## Used Endpoints
 
-GET    /products
 
-GET    /products/categories
 
-GET    /products/category/{category}
+POST /auth/login
 
-GET    /products/{id}
+GET /products
 
-GET    /users/{id}
-```
+GET /products/categories
+
+GET /products/category/{category}
+
+GET /products/{id}
+
+GET /users/{id}
+
 
 ---
 
-# 📦 Dependencies
-
-Main packages:
+# 📦 Main Dependencies
 
 ```yaml
-flutter_riverpod
-dio
-shared_preferences
-go_router
-cached_network_image
-equatable
-json_annotation
-```
+flutter_riverpod:
+dio:
+shared_preferences:
+go_router:
+cached_network_image:
+equatable:
+json_annotation:
 
----
 
-# 🚀 Getting Started
+Development dependencies:
 
-## Requirements
+build_runner:
+json_serializable:
+flutter_lints:
 
-- Flutter SDK
-- Dart SDK
-- Android Studio / VS Code
 
----
+🚀 Getting Started
 
-## Installation
+Requirements
+
+Before running this project, install:
+
+Flutter SDK
+
+Dart SDK
+
+Android Studio or VS Code
+
+Installation
 
 Clone repository:
 
-```bash
 git clone https://github.com/Kumala-Adugna/Ecommerce_app.git
-```
 
-Navigate:
 
-```bash
+Move into project:
+
 cd Ecommerce_app
-```
 
-Install dependencies:
 
-```bash
+Install packages:
+
 flutter pub get
-```
+
+
+Generate files:
+
+dart run build_runner build --delete-conflicting-outputs
+
 
 Run application:
 
-```bash
 flutter run
-```
 
----
 
-# 🧪 Testing
+🧪 Testing
 
-Run analyzer:
+Analyze project:
 
-```bash
 flutter analyze
-```
 
-Expected:
 
-```
+Expected result:
+
 No issues found!
-```
 
----
 
-# 📌 Future Improvements
+📂 Project Status
 
-- Payment integration
-- Order history
-- Product favorites
-- Push notifications
-- Dark mode
-- Advanced animations
-- Backend integration
+Completed:
 
----
+✅ Authentication✅ Login system✅ Session persistence✅ Product listing✅ Product details✅ Category filtering✅ Search functionality✅ Shopping cart✅ Cart persistence✅ Profile page✅ Logout functionality
 
-# 👨‍💻 Developer
+📌 Future Improvements
 
-**Kumala Adugna**
+Payment integration
 
-Computer Science and Engineering Student  
-Flutter Developer
+Order history
+
+Product favorites
+
+Push notifications
+
+Dark mode
+
+Advanced animations
+
+Backend integration
+
+Online payment gateway
+
+Recommendation system
+
+👨‍💻 Developer
+
+Kumala Adugna
+
+Computer Science and Engineering StudentFlutter Developer
 
 GitHub:
 
 https://github.com/Kumala-Adugna
 
----
 
-# 📄 License
+📄 License
 
 This project is developed for educational and portfolio purposes.
+
