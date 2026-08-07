@@ -13,30 +13,21 @@ class ProductState {
 
   const ProductState({
     this.status = ProductStatus.initial,
-
     this.products = const [],
-
     this.allProducts = const [],
-
     this.errorMessage,
   });
 
   ProductState copyWith({
     ProductStatus? status,
-
     List<Product>? products,
-
     List<Product>? allProducts,
-
     String? errorMessage,
   }) {
     return ProductState(
       status: status ?? this.status,
-
       products: products ?? this.products,
-
       allProducts: allProducts ?? this.allProducts,
-
       errorMessage: errorMessage,
     );
   }
