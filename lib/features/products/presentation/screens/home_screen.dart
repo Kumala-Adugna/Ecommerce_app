@@ -14,10 +14,10 @@ class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  ConsumerState createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -34,6 +34,7 @@ class _HomeScreenState extends ConsumerState {
   @override
   void dispose() {
     searchController.dispose();
+
     super.dispose();
   }
 
@@ -44,13 +45,20 @@ class _HomeScreenState extends ConsumerState {
     final categoryState = ref.watch(categoryProvider);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+
       appBar: AppBar(
         automaticallyImplyLeading: false,
 
         toolbarHeight: 115,
 
+        backgroundColor: const Color(0xFFF8F9FA),
+
+        elevation: 0,
+
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,13 +70,16 @@ class _HomeScreenState extends ConsumerState {
                   children: [
                     Text(
                       'Hello 👋',
+
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
 
                     Text(
                       'Find your products',
+
                       style: TextStyle(
                         fontSize: 22,
+
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -91,9 +102,17 @@ class _HomeScreenState extends ConsumerState {
               height: 42,
 
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Colors.white,
 
                 borderRadius: BorderRadius.circular(24),
+
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+
+                    blurRadius: 8,
+                  ),
+                ],
               ),
 
               child: TextField(
@@ -102,7 +121,7 @@ class _HomeScreenState extends ConsumerState {
                 decoration: InputDecoration(
                   hintText: 'Search products...',
 
-                  prefixIcon: const Icon(Icons.search, size: 22),
+                  prefixIcon: const Icon(Icons.search),
 
                   suffixIcon: searchController.text.isNotEmpty
                       ? IconButton(
@@ -146,6 +165,7 @@ class _HomeScreenState extends ConsumerState {
         ProductStatus.loaded => Column(
           children: [
             const HomeBanner(),
+
             SizedBox(
               height: 55,
 
@@ -153,13 +173,21 @@ class _HomeScreenState extends ConsumerState {
                   ? ListView(
                       scrollDirection: Axis.horizontal,
 
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
 
                       children: [
                         ChoiceChip(
                           label: const Text('All'),
 
                           selected: categoryState.selectedCategory == 'All',
+
+                          selectedColor: Theme.of(context).colorScheme.primary,
+
+                          labelStyle: TextStyle(
+                            color: categoryState.selectedCategory == 'All'
+                                ? Colors.white
+                                : Colors.black,
+                          ),
 
                           onSelected: (_) {
                             ref
@@ -177,10 +205,16 @@ class _HomeScreenState extends ConsumerState {
                             padding: const EdgeInsets.only(right: 8),
 
                             child: ChoiceChip(
-                              label: Text(category),
+                              label: Text(
+                                category == 'jewelery' ? 'jewelry' : category,
+                              ),
 
                               selected:
                                   categoryState.selectedCategory == category,
+
+                              selectedColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
 
                               onSelected: (_) {
                                 ref
@@ -201,14 +235,14 @@ class _HomeScreenState extends ConsumerState {
 
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
 
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
 
-                  crossAxisSpacing: 12,
+                  crossAxisSpacing: 14,
 
-                  mainAxisSpacing: 12,
+                  mainAxisSpacing: 14,
 
                   childAspectRatio: 0.68,
                 ),
@@ -226,7 +260,7 @@ class _HomeScreenState extends ConsumerState {
                         context,
 
                         MaterialPageRoute(
-                          builder: (context) =>
+                          builder: (_) =>
                               ProductDetailsScreen(product: product),
                         ),
                       );
